@@ -1,23 +1,34 @@
-// app/product/[id]/page.tsx
+// src/app/product/[id]/page.tsx
 
 import React from "react";
 
-interface Props {
-  params: { id: string };
+interface Product {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  brand: string;
+  stock: number;
+  rating: number;
+  images: string[];
 }
 
-// This must be a Server Component by default in App Router
-const ProductDetailsPage = async ({ params }: Props) => {
-  const res = await fetch(`https://dummyjson.com/products/${params.id}`);
-  const product = await res.json();
+const getProduct = async (id: string): Promise<Product> => {
+  const res = await fetch(`https://dummyjson.com/products/${id}`);
+  if (!res.ok) throw new Error("Product not found");
+  return res.json();
+};
+
+const ProductDetailsPage = async ({ params }: { params: { id: string } }) => {
+  const product = await getProduct(params.id);
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold">{product.title}</h1>
-      <p className="text-sm text-gray-500">{product.description}</p>
-      <div className="flex gap-4 mt-4">
+      <h1 className="text-2xl font-bold mb-2">{product.title}</h1>
+      <p className="text-sm text-gray-600 mb-4">{product.description}</p>
+      <div className="flex gap-4">
         <img
-          src={product.images?.[0]}
+          src={product.images[0]}
           alt={product.title}
           className="w-48 h-48 object-cover"
         />
