@@ -1,7 +1,10 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+// next.config.ts
+const nextConfig = {
+  reactStrictMode: true,
+  experimental: {
+    // `appDir` is enabled by default in Next.js 13+ and removed from config in v15
+    // So you do not need to manually specify it
+  },
 };
 
 export default nextConfig;
