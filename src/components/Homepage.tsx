@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import Link from "next/link";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "@/Redux/favoriteSlice";
@@ -97,34 +98,42 @@ const Homepage: React.FC = () => {
           if (!product) return null;
           const isLast = idx === filteredProducts.length - 1;
           return (
-            <div
-              ref={isLast ? lastProductRef : undefined}
+            <Link
               key={product?.id}
-              className="card border p-4 shadow-md rounded"
+              href={`/product/${product?.id}`}
+              className="block"
             >
-              <img
-                src={product?.thumbnail}
-                alt={product?.title}
-                className="w-full h-48 object-cover mb-2"
-              />
-              <h4 className="font-bold text-lg">{product?.title}</h4>
-              <p className="text-gray-600">{product?.category}</p>
-              <p className="text-green-600 font-semibold">${product?.price}</p>
-              <p className="text-yellow-500">Rating: {product?.rating}</p>
-              <Button
-                variant={isFavorite(product?.id) ? "destructive" : "outline"}
-                className="mt-2 w-full flex items-center gap-2"
-                onClick={() => handleFavorite(product)}
+              <div
+                className="card border p-4 shadow-md rounded hover:shadow-lg transition relative group"
+                ref={isLast ? lastProductRef : undefined}
               >
-                <Heart
-                  size={18}
-                  fill={isFavorite(product?.id) ? "red" : "none"}
-                  color={isFavorite(product?.id) ? "white" : "currentColor"}
-                  className="transition-colors"
+                <img
+                  src={product?.thumbnail}
+                  alt={product?.title}
+                  className="w-full h-48 object-cover mb-2"
                 />
-                {isFavorite(product?.id) ? "Unfavorite" : "Favorite"}
-              </Button>
-            </div>
+                <h4 className="font-bold text-lg">{product?.title}</h4>
+                <p className="text-gray-600">{product?.category}</p>
+                <p className="text-green-600 font-semibold">${product?.price}</p>
+                <p className="text-yellow-500">Rating: {product?.rating}</p>
+                <Button
+                  variant={isFavorite(product?.id) ? "destructive" : "outline"}
+                  className="mt-2 w-full flex items-center gap-2 z-10"
+                  onClick={e => {
+                    e.preventDefault(); // Prevent navigation
+                    handleFavorite(product);
+                  }}
+                >
+                  <Heart
+                    size={18}
+                    fill={isFavorite(product?.id) ? "red" : "none"}
+                    color={isFavorite(product?.id) ? "white" : "currentColor"}
+                    className="transition-colors"
+                  />
+                  {isFavorite(product?.id) ? "Unfavorite" : "Favorite"}
+                </Button>
+              </div>
+            </Link>
           );
         })}
       </div>
