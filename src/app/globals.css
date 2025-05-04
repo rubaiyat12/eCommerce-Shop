@@ -120,3 +120,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+body.dark {
+  background: #18181b;
+  color: #f4f4f5;
+}
+
+body.light {
+  background: #fff;
+  color: #222;
+}

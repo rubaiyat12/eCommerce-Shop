@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { EditProductDialog } from "@/components/EditProductDialog";
 
-// The full product type from your API/component
+
 interface Product {
   id: number;
   title: string;
@@ -41,14 +41,14 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  // Map your product to the Redux Product type
+  
   const getFavoriteProduct = (p: Product): FavoriteProduct => ({
     id: p.id,
     title: p.title,
     price: p.price,
     rating: p.rating,
     category: p.category ?? "",
-    thumbnail: p.images?.[0] ?? "", // Use first image as thumbnail
+    thumbnail: p.images?.[0] ?? "", 
   });
 
   const isFavorite = favorites.some((item) => item.id === currentProduct.id);

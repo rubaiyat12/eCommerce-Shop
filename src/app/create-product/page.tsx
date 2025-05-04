@@ -1,56 +1,43 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
 
-const initialState = {
+type FormValues = {
+  title: string;
+  description: string;
+  price: number;
+  stock: number;
+  brand: string;
+  category: string;
+};
+
+const defaultValues: FormValues = {
   title: "",
   description: "",
-  price: "",
-  stock: "",
+  price: 0,
+  stock: 0,
   brand: "",
   category: "",
 };
 
 const CreateProduct: React.FC = () => {
-  const [form, setForm] = useState(initialState);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({
+    defaultValues,
+  });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    if (
-      !form.title ||
-      !form.description ||
-      !form.price ||
-      !form.stock ||
-      !form.brand ||
-      !form.category
-    ) {
-      setError("All fields are required.");
-      setLoading(false);
-      return;
-    }
-
+  const onSubmit = async (data: FormValues) => {
     try {
-      const payload = {
-        ...form,
-        price: Number(form.price),
-        stock: Number(form.stock),
-      };
       const res = await axios.post(
         "https://dummyjson.com/products/add",
-        payload,
+        data,
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -58,102 +45,91 @@ const CreateProduct: React.FC = () => {
       toast.success("Product is created", {
         description: `Product created! ID: ${res.data.id}`,
       });
-      setForm(initialState);
+      reset();
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Failed to create product.");
+        toast.error(err.response?.data?.message || "Failed to create product.");
       } else if (err instanceof Error) {
-        setError(err.message);
+        toast.error(err.message);
       } else {
-        setError("Failed to create product.");
+        toast.error("Failed to create product");
       }
-      toast.error("Failed to create product");
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg bg-white shadow">
+    <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow bg-white text-gray-900 dark:bg-zinc-900 dark:border-zinc-700 dark:text-gray-100">
       <h2 className="text-2xl font-bold mb-6">Create Product</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* ...form fields as before... */}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block font-medium mb-1">Title</label>
+          <label className="block font-medium mb-1 text-gray-700 dark:text-gray-200">Title</label>
           <input
             type="text"
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required
+            {...register("title", { required: "Title is required" })}
+            className="w-full border rounded px-3 py-2 bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100 dark:border-zinc-600"
           />
+          {errors.title && <span className="text-red-500 text-sm">{errors.title.message}</span>}
         </div>
         <div>
-          <label className="block font-medium mb-1">Description</label>
+          <label className="block font-medium mb-1 text-gray-700 dark:text-gray-200">Description</label>
           <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required
+            {...register("description", { required: "Description is required" })}
+            className="w-full border rounded px-3 py-2 bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100 dark:border-zinc-600"
           />
+          {errors.description && <span className="text-red-500 text-sm">{errors.description.message}</span>}
         </div>
         <div>
-          <label className="block font-medium mb-1">Price</label>
+          <label className="block font-medium mb-1 text-gray-700 dark:text-gray-200">Price</label>
           <input
             type="number"
-            name="price"
-            value={form.price}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required
-            min={0}
+            {...register("price", {
+              required: "Price is required",
+              min: { value: 0, message: "Price must be at least 0" },
+              valueAsNumber: true,
+            })}
+            className="w-full border rounded px-3 py-2 bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100 dark:border-zinc-600"
           />
+          {errors.price && <span className="text-red-500 text-sm">{errors.price.message}</span>}
         </div>
         <div>
-          <label className="block font-medium mb-1">Stock</label>
+          <label className="block font-medium mb-1 text-gray-700 dark:text-gray-200">Stock</label>
           <input
             type="number"
-            name="stock"
-            value={form.stock}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required
-            min={0}
+            {...register("stock", {
+              required: "Stock is required",
+              min: { value: 0, message: "Stock must be at least 0" },
+              valueAsNumber: true,
+            })}
+            className="w-full border rounded px-3 py-2 bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100 dark:border-zinc-600"
           />
+          {errors.stock && <span className="text-red-500 text-sm">{errors.stock.message}</span>}
         </div>
         <div>
-          <label className="block font-medium mb-1">Brand</label>
+          <label className="block font-medium mb-1 text-gray-700 dark:text-gray-200">Brand</label>
           <input
             type="text"
-            name="brand"
-            value={form.brand}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required
+            {...register("brand", { required: "Brand is required" })}
+            className="w-full border rounded px-3 py-2 bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100 dark:border-zinc-600"
           />
+          {errors.brand && <span className="text-red-500 text-sm">{errors.brand.message}</span>}
         </div>
         <div>
-          <label className="block font-medium mb-1">Category</label>
+          <label className="block font-medium mb-1 text-gray-700 dark:text-gray-200">Category</label>
           <input
             type="text"
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required
+            {...register("category", { required: "Category is required" })}
+            className="w-full border rounded px-3 py-2 bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100 dark:border-zinc-600"
           />
+          {errors.category && <span className="text-red-500 text-sm">{errors.category.message}</span>}
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition dark:bg-blue-500 dark:hover:bg-blue-600"
+          disabled={isSubmitting}
         >
-          {loading ? "Creating..." : "Create Product"}
+          {isSubmitting ? "Creating..." : "Create Product"}
         </button>
       </form>
-      {error && <div className="mt-4 text-red-600">{error}</div>}
     </div>
   );
 };

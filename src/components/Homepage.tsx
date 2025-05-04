@@ -76,7 +76,7 @@ const Homepage: React.FC = () => {
     dispatch(toggleFavorite(product));
   };
 
-  // Check if product is favorite
+  //  Check if product is favorite
   const isFavorite = (id?: number) => favorites.some((item) => item.id === id);
 
   return (
@@ -120,7 +120,7 @@ const Homepage: React.FC = () => {
                   variant={isFavorite(product?.id) ? "destructive" : "outline"}
                   className="mt-2 w-full flex items-center gap-2 z-10"
                   onClick={e => {
-                    e.preventDefault(); // Prevent navigation
+                    e.preventDefault(); 
                     handleFavorite(product);
                   }}
                 >

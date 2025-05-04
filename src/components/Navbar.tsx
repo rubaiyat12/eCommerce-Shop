@@ -10,6 +10,7 @@ import {
   SheetHeader,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Navbar: React.FC = () => {
   const navItems = [
@@ -19,11 +20,13 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="flex items-center justify-between px-4 py-3 border-b shadow-sm">
+      {/* Logo */}
       <Link href="/" className="text-xl font-bold">
         ProductApp
       </Link>
 
-      <div className="hidden md:flex gap-4">
+      {/* for Desktop view */}
+      <div className="hidden md:flex gap-4 items-center">
         {navItems.map((item) => (
           <Link
             key={item.href}
@@ -33,9 +36,12 @@ const Navbar: React.FC = () => {
             {item.name}
           </Link>
         ))}
+        <ThemeToggle /> 
       </div>
 
-      <div className="md:hidden">
+      {/* Mobile Nav */}
+      <div className="md:hidden flex items-center">
+        <ThemeToggle /> 
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">

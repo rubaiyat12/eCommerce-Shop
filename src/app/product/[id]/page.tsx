@@ -6,7 +6,7 @@ async function getProduct(id: string) {
   return res.json();
 }
 
-// Next.js 15+ requires params to be awaited
+
 export default async function ProductDetailsPage({
   params,
 }: {

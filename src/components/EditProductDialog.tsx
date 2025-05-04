@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Pencil } from "lucide-react";
-import { toast } from "sonner"; // Sonner for toast notifications
+import { toast } from "sonner"; 
 
 interface Product {
   id: number;
@@ -45,7 +45,7 @@ export function EditProductDialog({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Keep form in sync if product changes
+ 
   useEffect(() => {
     setForm({
       title: product.title,
