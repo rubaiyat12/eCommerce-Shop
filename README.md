@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 eCommerce Shop
 
-## Getting Started
+A modern and responsive eCommerce web application built with **Next.js**, **TypeScript**, **Tailwind CSS**, and **Redux Toolkit**. It provides a smooth product browsing experience using the [DummyJSON API](https://dummyjson.com/), with features like product listing, favorites, search, CRUD operations, dark/light mode, and more.
 
-First, run the development server:
+🔗 **Live Demo:** [https://e-commerce-shop-54zl.vercel.app/](https://e-commerce-shop-54zl.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔧 Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **UI Components:** [shadcn/ui](https://ui.shadcn.com/)
+- **State Management:** Redux Toolkit
+- **API:** [DummyJSON](https://dummyjson.com/)
+- **HTTP Client:** Axios
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ✨ Features
 
-To learn more about Next.js, take a look at the following resources:
+### 🏠 Homepage (`/`)
+- **Responsive Navbar** with:
+  - Link to **Favorites** page
+  - Link to **Create Product**
+  - **Dark/Light Mode** toggle
+- **Search Bar** to filter products in real-time
+- **Product Listing** with:
+  - On-scroll Pagination (`?limit=10&skip=10`)
+  - Product Card view
+  - Favorite/Unfavorite toggle with heart icon
+  - Clickable cards to view detailed product info
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 💖 Favorites (`/favourite`)
+- View a list of all favorited products
+- Easily unfavorite any product
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 🔍 Product Details (`/product/[id]`)
+- Each product opens in a **dynamic route**
+- View complete product details
+- **Edit** product using a modal dialog
+- **Delete** product with a confirmation popup
+- **Toast notifications** for feedback
 
-## Deploy on Vercel
+### ➕ Create Product (`/create-product`)
+- Add a new product through a form
+- Toast notification upon successful creation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
