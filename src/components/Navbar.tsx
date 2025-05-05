@@ -9,6 +9,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTrigger,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -50,9 +51,9 @@ const Navbar: React.FC = () => {
           </SheetTrigger>
           <SheetContent side="right">
             <SheetHeader>
-              <h2 className="text-lg font-semibold">Menu</h2>
+            <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
-            <div className="mt-4 flex flex-col gap-4">
+            <div className="mt-4 flex flex-col gap-4 pl-4">
               {navItems.map((item) => (
                 <Link
                   key={item.href}

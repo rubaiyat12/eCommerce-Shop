@@ -8,8 +8,8 @@ import { useForm } from "react-hook-form";
 type FormValues = {
   title: string;
   description: string;
-  price: number;
-  stock: number;
+  price: number | null;
+  stock: number | null;
   brand: string;
   category: string;
 };
@@ -17,8 +17,8 @@ type FormValues = {
 const defaultValues: FormValues = {
   title: "",
   description: "",
-  price: 0,
-  stock: 0,
+  price: null,
+  stock: null,
   brand: "",
   category: "",
 };
@@ -44,6 +44,7 @@ const CreateProduct: React.FC = () => {
       );
       toast.success("Product is created", {
         description: `Product created! ID: ${res.data.id}`,
+        position: "top-center",
       });
       reset();
     } catch (err: unknown) {
@@ -52,7 +53,10 @@ const CreateProduct: React.FC = () => {
       } else if (err instanceof Error) {
         toast.error(err.message);
       } else {
-        toast.error("Failed to create product");
+        
+        toast.error("Failed to create product", {
+          position: "top-center",
+        });
       }
     }
   };
@@ -82,13 +86,16 @@ const CreateProduct: React.FC = () => {
           <label className="block font-medium mb-1 text-gray-700 dark:text-gray-200">Price</label>
           <input
             type="number"
+            step="0.01" 
             {...register("price", {
-              required: "Price is required",
-              min: { value: 0, message: "Price must be at least 0" },
-              valueAsNumber: true,
-            })}
-            className="w-full border rounded px-3 py-2 bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100 dark:border-zinc-600"
-          />
+            required: "Price is required",
+            min: { value: 0, message: "Price must be at least 0" },
+           valueAsNumber: true,
+           })}
+ 
+          className="w-full border rounded px-3 py-2 bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100 dark:border-zinc-600"
+           />
+
           {errors.price && <span className="text-red-500 text-sm">{errors.price.message}</span>}
         </div>
         <div>

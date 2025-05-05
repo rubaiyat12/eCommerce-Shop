@@ -83,6 +83,7 @@ export function EditProductDialog({
       setOpen(false);
       toast.success("Edit successful", {
         description: "Product updated successfully.",
+        position: "top-center", 
       });
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -90,7 +91,9 @@ export function EditProductDialog({
       } else {
         setError("Failed to update product.");
       }
-      toast.error("Failed to update product");
+      toast.error("Failed to update product", {
+        position: "top-center", 
+      });
     } finally {
       setLoading(false);
     }
@@ -131,7 +134,9 @@ export function EditProductDialog({
             placeholder="Price"
             required
             min={0}
-          />
+            step="0.01" 
+            />
+
           <Input
             type="number"
             name="stock"

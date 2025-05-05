@@ -23,7 +23,7 @@ const Homepage: React.FC = () => {
   const dispatch = useDispatch();
   const favorites = useSelector((state: RootState) => state.favorites.items);
 
-  // Infinite scroll observer
+  // scroll 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastProductRef = useCallback(
     (node: HTMLDivElement | null) => {
