@@ -20,7 +20,7 @@ const Navbar: FC = () => {
   ];
 
   return (
-    <nav className="flex items-center justify-between px-4 py-3 border-b shadow-sm">
+    <nav className="sticky top-0 z-50 bg-white dark:bg-zinc-900 flex items-center justify-between px-4 py-3 border-b shadow-sm">
       {/* Logo */}
       <Link href="/" className="text-xl font-bold">
         ProductApp

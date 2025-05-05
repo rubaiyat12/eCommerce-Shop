@@ -4,17 +4,21 @@ import React, { FC } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { FormValues } from "@/types";
 
 const CreateProduct: FC = () => {
-    const defaultValues: FormValues = {
-        title: "",
-        description: "",
-        price: null,
-        stock: null,
-        brand: "",
-        category: "",
-      };
+  const router = useRouter();
+
+  const defaultValues: FormValues = {
+    title: "",
+    description: "",
+    price: null,
+    stock: null,
+    brand: "",
+    category: "",
+  };
+
   const {
     register,
     handleSubmit,
@@ -38,13 +42,13 @@ const CreateProduct: FC = () => {
         position: "top-right",
       });
       reset();
+      router.push("/");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         toast.error(err.response?.data?.message || "Failed to create product.");
       } else if (err instanceof Error) {
         toast.error(err.message);
       } else {
-        
         toast.error("Failed to create product", {
           position: "top-center",
         });
@@ -77,16 +81,14 @@ const CreateProduct: FC = () => {
           <label className="block font-medium mb-1 text-gray-700 dark:text-gray-200">Price</label>
           <input
             type="number"
-            step="0.01" 
+            step="0.01"
             {...register("price", {
-            required: "Price is required",
-            min: { value: 0, message: "Price must be at least 0" },
-           valueAsNumber: true,
-           })}
- 
-          className="w-full border rounded px-3 py-2 bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100 dark:border-zinc-600"
-           />
-
+              required: "Price is required",
+              min: { value: 0, message: "Price must be at least 0" },
+              valueAsNumber: true,
+            })}
+            className="w-full border rounded px-3 py-2 bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100 dark:border-zinc-600"
+          />
           {errors.price && <span className="text-red-500 text-sm">{errors.price.message}</span>}
         </div>
         <div>
