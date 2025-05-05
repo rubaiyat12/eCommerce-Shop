@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { FC } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import ThemeToggle from "@/components/ThemeToggle";
 
-const Navbar: React.FC = () => {
+const Navbar: FC = () => {
   const navItems = [
     { name: "Favourite", href: "/favourite" },
     { name: "Create Product", href: "/create-product" },

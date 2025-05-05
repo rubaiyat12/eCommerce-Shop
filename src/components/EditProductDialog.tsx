@@ -13,26 +13,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Pencil } from "lucide-react";
 import { toast } from "sonner"; 
+import { IProduct } from "@/models";
 
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  brand: string;
-  stock: number;
-  rating: number;
-  images: string[];
-  category?: string;
-}
 
-export function EditProductDialog({
+
+export const EditProductDialog =({
   product,
   onProductUpdate,
 }: {
-  product: Product;
-  onProductUpdate: (p: Product) => void;
-}) {
+  product: IProduct;
+  onProductUpdate: (product: IProduct) => void;
+}) => {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     title: product.title,
@@ -42,20 +33,11 @@ export function EditProductDialog({
     stock: product.stock,
     category: product.category || "",
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
  
-  useEffect(() => {
-    setForm({
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      brand: product.brand,
-      stock: product.stock,
-      category: product.category || "",
-    });
-  }, [product]);
+ 
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -68,16 +50,23 @@ export function EditProductDialog({
     setLoading(true);
     setError(null);
     try {
+      const payload = JSON.stringify({
+        ...form,
+        price: Number(form.price),
+        stock: Number(form.stock),
+      })
       const res = await fetch(`https://dummyjson.com/products/${product.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          price: Number(form.price),
-          stock: Number(form.stock),
-        }),
+        body: payload
       });
-      if (!res.ok) throw new Error("Failed to update product");
+      if (!res.ok) {
+        toast.error("Edit Failed", {
+          description: "Failed to update product",
+          position: "top-center", 
+        });
+        return 
+      }
       const updated = await res.json();
       onProductUpdate(updated);
       setOpen(false);
@@ -98,6 +87,17 @@ export function EditProductDialog({
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setForm({
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      brand: product.brand,
+      stock: product.stock,
+      category: product.category || "",
+    });
+  }, [product]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -2,8 +2,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/Redux/Store";
 import { toggleTheme } from "@/Redux/themeSlice";
+import { FC } from "react";
 
-export default function ThemeToggle() {
+const ThemeToggle:FC =()=> {
   const dispatch = useDispatch();
   const mode = useSelector((state: RootState) => state.theme.mode);
 
@@ -26,3 +27,4 @@ export default function ThemeToggle() {
     </label>
   );
 }
+export default ThemeToggle;

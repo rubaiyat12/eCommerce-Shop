@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, FC } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,19 +9,25 @@ import { RootState } from "@/Redux/Store";
 import { IProduct } from "@/models";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
+import Image from "next/image";
 
-const LIMIT = 10;
 
-const Homepage: React.FC = () => {
-  const [products, setProducts] = useState<IProduct[]>([]);
-  const [skip, setSkip] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
+const LIMIT:number = 10;
+
+
+const Homepage: FC = () => {
 
   const dispatch = useDispatch();
   const favorites = useSelector((state: RootState) => state.favorites.items);
+
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [skip, setSkip] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState<string>("");
+
+ 
 
   // scroll 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -61,14 +67,11 @@ const Homepage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-    // eslint-disable-next-line
-  }, []);
+ 
 
   // Search filter
-  const filteredProducts = products.filter((p) =>
-    p?.title?.toLowerCase().includes(search.toLowerCase())
+  const filteredProducts = products?.filter((product:IProduct) =>
+    product?.title?.toLowerCase().includes(search.toLowerCase())
   );
 
   // Favorite toggle
@@ -77,7 +80,12 @@ const Homepage: React.FC = () => {
   };
 
   //  Check if product is favorite
-  const isFavorite = (id?: number) => favorites.some((item) => item.id === id);
+  const isFavorite = (id?: number) => favorites?.some((item) => item.id === id);
+
+  useEffect(() => {
+    fetchProducts();
+    
+  }, []);
 
   return (
     <>
@@ -94,7 +102,7 @@ const Homepage: React.FC = () => {
 
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-        {filteredProducts.map((product, idx) => {
+        {filteredProducts?.map((product:IProduct, idx:number) => {
           if (!product) return null;
           const isLast = idx === filteredProducts.length - 1;
           return (
@@ -107,11 +115,15 @@ const Homepage: React.FC = () => {
                 className="card border p-4 shadow-md rounded hover:shadow-lg transition relative group"
                 ref={isLast ? lastProductRef : undefined}
               >
-                <img
-                  src={product?.thumbnail}
-                  alt={product?.title}
-                  className="w-full h-48 object-cover mb-2"
-                />
+               <div className="relative w-full h-48 mb-2 rounded overflow-hidden">
+                 <Image
+                    src={product?.thumbnail}
+                    alt={product?.title}
+                    fill
+                    className="object-cover"
+                        />
+                    </div>
+
                 <h4 className="font-bold text-lg">{product?.title}</h4>
                 <p className="text-gray-600">{product?.category}</p>
                 <p className="text-green-600 font-semibold">${product?.price}</p>

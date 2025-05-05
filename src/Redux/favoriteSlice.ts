@@ -1,16 +1,10 @@
+import { IProduct } from '@/models';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface Product {
-  id: number;
-  title: string;
-  price: number;
-  rating: number;
-  category: string;
-  thumbnail: string;
-}
+
 
 interface FavoriteState {
-  items: Product[];
+  items: IProduct[];
 }
 
 const initialState: FavoriteState = {
@@ -21,7 +15,7 @@ const favoriteSlice = createSlice({
   name: 'favorites',
   initialState,
   reducers: {
-    toggleFavorite: (state, action: PayloadAction<Product>) => {
+    toggleFavorite: (state, action: PayloadAction<IProduct>) => {
       const exists = state.items.find(item => item.id === action.payload.id);
       if (exists) {
         state.items = state.items.filter(item => item.id !== action.payload.id);

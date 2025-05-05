@@ -14,9 +14,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ReduxProvider>
           <ThemeProvider>
+          <Toaster />
             <Navbar />
             {children}
-            <Toaster />
+            
           </ThemeProvider>
         </ReduxProvider>
       </body>
