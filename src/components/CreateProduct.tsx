@@ -35,7 +35,7 @@ const CreateProduct: FC = () => {
       );
       toast.success("Product is created", {
         description: `Product created! ID: ${res.data.id}`,
-        position: "top-center",
+        position: "top-right",
       });
       reset();
     } catch (err: unknown) {

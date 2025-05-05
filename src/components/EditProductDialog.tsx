@@ -72,7 +72,7 @@ export const EditProductDialog =({
       setOpen(false);
       toast.success("Edit successful", {
         description: "Product updated successfully.",
-        position: "top-center", 
+        position: "top-right", 
       });
     } catch (err: unknown) {
       if (err instanceof Error) {

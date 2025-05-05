@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image"; 
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "@/Redux/favoriteSlice";
 import { RootState } from "@/Redux/Store";
@@ -20,20 +21,15 @@ import {
 import { EditProductDialog } from "@/components/EditProductDialog";
 import { IProduct } from "@/models";
 
-
-
-
- const ProductDetails=({ product }: { product: IProduct })=> {
+const ProductDetails = ({ product }: { product: IProduct }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const favorites = useSelector((state: RootState) => state.favorites.items);
- 
 
   const [currentProduct, setCurrentProduct] = useState<IProduct>(product);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  
   const getFavoriteProduct = (product: IProduct): IProduct => ({
     ...product,
     id: product.id,
@@ -41,7 +37,7 @@ import { IProduct } from "@/models";
     price: product.price,
     rating: product.rating,
     category: product.category ?? "",
-    thumbnail: product.images?.[0] ?? "", 
+    thumbnail: product.images?.[0] ?? "",
   });
 
   const isFavorite = favorites.some((item) => item.id === currentProduct?.id);
@@ -76,10 +72,12 @@ import { IProduct } from "@/models";
       <p className="text-sm text-gray-500 mb-4">{currentProduct?.description}</p>
       <div className="flex gap-6 flex-col md:flex-row">
         <div className="flex-shrink-0">
-          <img
+          <Image
             src={currentProduct?.images[0]}
             alt={currentProduct?.title}
-            className="w-64 h-64 object-cover rounded"
+            width={256}
+            height={256}
+            className="rounded object-cover"
           />
         </div>
         <div>
@@ -87,21 +85,23 @@ import { IProduct } from "@/models";
           <p className="mb-1">Brand: {currentProduct?.brand}</p>
           <p className="mb-1">Stock: {currentProduct?.stock}</p>
           <p className="mb-1">Rating: {currentProduct?.rating}</p>
+
           {currentProduct?.images.length > 1 && (
             <div className="mt-4 flex gap-2 flex-wrap">
               {currentProduct.images.slice(1).map((img, idx) => (
-                <img
+                <Image
                   key={idx}
                   src={img}
                   alt={`${currentProduct.title} ${idx + 2}`}
-                  className="w-20 h-20 object-cover rounded border"
+                  width={80}
+                  height={80}
+                  className="rounded object-cover border"
                 />
               ))}
             </div>
           )}
-          {/* Action Buttons */}
+
           <div className="flex gap-3 mt-6">
-            {/* Favorite Button */}
             <Button
               variant={isFavorite ? "destructive" : "outline"}
               onClick={handleFavorite}
@@ -114,12 +114,12 @@ import { IProduct } from "@/models";
               />
               {isFavorite ? "Unfavorite" : "Favorite"}
             </Button>
-            {/* Edit Button (Dialog) */}
+
             <EditProductDialog
               product={currentProduct}
               onProductUpdate={setCurrentProduct}
             />
-            {/* Delete Button with AlertDialog */}
+
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
@@ -140,10 +140,7 @@ import { IProduct } from "@/models";
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel disabled={deleting}>No</AlertDialogCancel>
-                  <AlertDialogAction
-                    asChild
-                    disabled={deleting}
-                  >
+                  <AlertDialogAction asChild disabled={deleting}>
                     <Button
                       variant="destructive"
                       onClick={handleDelete}
@@ -163,5 +160,6 @@ import { IProduct } from "@/models";
       </div>
     </div>
   );
-}
+};
+
 export default ProductDetails;

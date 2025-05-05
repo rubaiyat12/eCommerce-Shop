@@ -1,22 +1,15 @@
 "use client";
-
 import React, { useEffect, useRef, useState, useCallback, FC } from "react";
-import Link from "next/link";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "@/Redux/favoriteSlice";
 import { RootState } from "@/Redux/Store";
 import { IProduct } from "@/models";
-import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
-import Image from "next/image";
+import ProductCard from "@/components/ProductCard";
 
-
-const LIMIT:number = 10;
-
+const LIMIT = 10;
 
 const Homepage: FC = () => {
-
   const dispatch = useDispatch();
   const favorites = useSelector((state: RootState) => state.favorites.items);
 
@@ -27,9 +20,7 @@ const Homepage: FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState<string>("");
 
- 
-
-  // scroll 
+  // Infinite scroll observer
   const observer = useRef<IntersectionObserver | null>(null);
   const lastProductRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -53,7 +44,6 @@ const Homepage: FC = () => {
         `https://dummyjson.com/products?limit=${LIMIT}&skip=${skip}`
       );
       setProducts((prev) => {
-        // Filter out duplicate IDs before adding
         const existingIds = new Set(prev.map((p) => p?.id));
         const newProducts = res.data.products.filter((p) => !existingIds.has(p?.id));
         return [...prev, ...newProducts];
@@ -67,10 +57,8 @@ const Homepage: FC = () => {
     }
   };
 
- 
-
   // Search filter
-  const filteredProducts = products?.filter((product:IProduct) =>
+  const filteredProducts = products?.filter((product: IProduct) =>
     product?.title?.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -79,16 +67,16 @@ const Homepage: FC = () => {
     dispatch(toggleFavorite(product));
   };
 
-  //  Check if product is favorite
+  // Check if product is favorite
   const isFavorite = (id?: number) => favorites?.some((item) => item.id === id);
 
   useEffect(() => {
     fetchProducts();
-    
+    // eslint-disable-next-line
   }, []);
 
   return (
-    <>
+    <main className="min-h-screen bg-gray-50 dark:bg-zinc-900 py-6">
       {/* Search Bar */}
       <div className="p-4 flex justify-center">
         <input
@@ -96,65 +84,34 @@ const Homepage: FC = () => {
           placeholder="Search products by title..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-md px-4 py-2 border rounded shadow"
+          className="w-full max-w-md px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded shadow bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
 
       {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-        {filteredProducts?.map((product:IProduct, idx:number) => {
-          if (!product) return null;
-          const isLast = idx === filteredProducts.length - 1;
-          return (
-            <Link
-              key={product?.id}
-              href={`/product/${product?.id}`}
-              className="block"
-            >
-              <div
-                className="card border p-4 shadow-md rounded hover:shadow-lg transition relative group"
-                ref={isLast ? lastProductRef : undefined}
-              >
-               <div className="relative w-full h-48 mb-2 rounded overflow-hidden">
-                 <Image
-                    src={product?.thumbnail}
-                    alt={product?.title}
-                    fill
-                    className="object-cover"
-                        />
-                    </div>
-
-                <h4 className="font-bold text-lg">{product?.title}</h4>
-                <p className="text-gray-600">{product?.category}</p>
-                <p className="text-green-600 font-semibold">${product?.price}</p>
-                <p className="text-yellow-500">Rating: {product?.rating}</p>
-                <Button
-                  variant={isFavorite(product?.id) ? "destructive" : "outline"}
-                  className="mt-2 w-full flex items-center gap-2 z-10"
-                  onClick={e => {
-                    e.preventDefault(); 
-                    handleFavorite(product);
-                  }}
-                >
-                  <Heart
-                    size={18}
-                    fill={isFavorite(product?.id) ? "red" : "none"}
-                    color={isFavorite(product?.id) ? "white" : "currentColor"}
-                    className="transition-colors"
-                  />
-                  {isFavorite(product?.id) ? "Unfavorite" : "Favorite"}
-                </Button>
-              </div>
-            </Link>
-          );
-        })}
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {filteredProducts?.map((product: IProduct, idx: number) => {
+            if (!product) return null;
+            const isLast = idx === filteredProducts.length - 1;
+            return (
+              <ProductCard
+                key={product.id}
+                product={product}
+                isFavorite={isFavorite(product.id)}
+                onFavoriteToggle={handleFavorite}
+                refCallback={isLast ? lastProductRef : undefined}
+              />
+            );
+          })}
+        </div>
+        {loading && <div className="text-center p-4">Loading more products...</div>}
+        {error && <div className="text-center text-red-500 p-4">{error}</div>}
+        {!hasMore && !loading && (
+          <div className="text-center p-4 text-gray-500">No more products.</div>
+        )}
       </div>
-      {loading && <div className="text-center p-4">Loading more products...</div>}
-      {error && <div className="text-center text-red-500 p-4">{error}</div>}
-      {!hasMore && !loading && (
-        <div className="text-center p-4 text-gray-500">No more products.</div>
-      )}
-    </>
+    </main>
   );
 };
 
