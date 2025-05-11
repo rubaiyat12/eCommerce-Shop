@@ -1,20 +1,28 @@
+import axios from "axios";
 import ProductDetails from "@/components/ProductDetails";
+import { IProduct } from "@/models";
 
-const getProduct = async(id: string)=> {
-  const res = await fetch(`https://dummyjson.com/products/${id}`);
-  if (!res.ok) throw new Error("Failed to fetch product");
-  return res.json();
-}
+// Fetch product data
+const getProduct = async (id: string): Promise<IProduct> => {
+  try {
+    const res = await axios.get(`https://dummyjson.com/products/${id}`);
+    return res.data;
+  } catch (error) {
+    console.error("Failed to fetch product:", error);
+    throw new Error("Failed to fetch product");
+  }
+};
 
 
-const ProductDetailsPage = async({
-  params,
-}: {
+interface PageProps {
   params: Promise<{ id: string }>;
-}) => {
-  const { id } = await params;
-  const product = await getProduct(id);
-  return <ProductDetails product={product} />;
 }
+
+const ProductDetailsPage = async ({ params }: PageProps) => {
+  const resolvedParams = await params;
+  const product = await getProduct(resolvedParams.id);
+  
+  return <ProductDetails product={product} />;
+};
 
 export default ProductDetailsPage;

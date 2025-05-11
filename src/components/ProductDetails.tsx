@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { EditProductDialog } from "@/components/EditProductDialog";
 import { IProduct } from "@/models";
+import axios from "axios";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
   const router = useRouter();
@@ -50,14 +51,11 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
     setDeleting(true);
     setDeleteError(null);
     try {
-      const res = await fetch(`https://dummyjson.com/products/${currentProduct.id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Failed to delete product");
+      await axios.delete(`https://dummyjson.com/products/${currentProduct.id}`);
       router.push("/");
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setDeleteError(err.message);
+      if (axios.isAxiosError(err)) {
+        setDeleteError(err.response?.data?.message || err.message);
       } else {
         setDeleteError("Failed to delete product.");
       }

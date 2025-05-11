@@ -14,10 +14,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Pencil } from "lucide-react";
 import { toast } from "sonner"; 
 import { IProduct } from "@/models";
+import axios from "axios";
 
-
-
-export const EditProductDialog =({
+export const EditProductDialog = ({
   product,
   onProductUpdate,
 }: {
@@ -36,9 +35,6 @@ export const EditProductDialog =({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
- 
- 
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -50,38 +46,34 @@ export const EditProductDialog =({
     setLoading(true);
     setError(null);
     try {
-      const payload = JSON.stringify({
+      const payload = {
         ...form,
         price: Number(form.price),
         stock: Number(form.stock),
-      })
-      const res = await fetch(`https://dummyjson.com/products/${product.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: payload
-      });
-      if (!res.ok) {
-        toast.error("Edit Failed", {
-          description: "Failed to update product",
-          position: "top-center", 
-        });
-        return 
-      }
-      const updated = await res.json();
-      onProductUpdate(updated);
+      };
+
+      const res = await axios.patch(
+        `https://dummyjson.com/products/${product.id}`,
+        payload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      onProductUpdate(res.data);
       setOpen(false);
       toast.success("Edit successful", {
         description: "Product updated successfully.",
-        position: "top-right", 
+        position: "top-right",
       });
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || err.message);
       } else {
         setError("Failed to update product.");
       }
       toast.error("Failed to update product", {
-        position: "top-center", 
+        position: "top-center",
       });
     } finally {
       setLoading(false);
@@ -134,9 +126,8 @@ export const EditProductDialog =({
             placeholder="Price"
             required
             min={0}
-            step="0.01" 
-            />
-
+            step="0.01"
+          />
           <Input
             type="number"
             name="stock"
@@ -178,4 +169,4 @@ export const EditProductDialog =({
       </DialogContent>
     </Dialog>
   );
-}
+};
